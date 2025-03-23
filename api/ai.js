@@ -7,15 +7,22 @@ const RESPONSE_MESSAGES = require("../utils/responses");
 Router.get("/", async (req, res) => {
   autoSignin(req, res, async (userId) => {
     try {
-
-      const term = req.query.term;
-      const attempt = req.query.attempt;
-      const API_KEY = process.env.AI_API_KEY;
+      const connection = pool.promise();
+      const [[userInfo]] = await connection.query(
+        `SELECT user_id, name, email, is_admin FROM users WHERE user_id = ?`,
+        [userId]
+      );
 
       if (!userInfo) {
         const response = RESPONSE_MESSAGES.noUser();
         return res.status(response.status).send(response);
       }
+
+      const term = req.query.term;
+      const attempt = req.query.attempt;
+      const API_KEY = process.env.AI_API_KEY;
+
+      console.log(term, attempt);
 
       fetch('https://api.together.xyz/v1/chat/completions', {
         method: 'POST',
@@ -44,12 +51,14 @@ Router.get("/", async (req, res) => {
       })
         .then(response => response.json())
         .then(data => {
-          const res = data["choices"][0]["message"]['content'];
+          console.log(data);
+          const result = data["choices"][0]["message"]['content'];
 
           res.status(200).send({
             success: true,
+            status: 200,
             data: {
-              response: res
+              response: result
             }
           });
 
