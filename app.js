@@ -45,6 +45,7 @@ module.exports = { server, sessionMiddleWare };
 //API
 const authAPI = require("./api/auth").Router;
 const accountAPI = require("./api/account");
+const aiAPI = require("./api/ai");
 
 //middlewares
 
@@ -98,6 +99,7 @@ app.use(sessionMiddleWare);
 //api
 app.use("/auth", authAPI);
 app.use("/account", accountAPI);
+app.use('/ai', aiAPI);
 
 server.listen(process.env.PORT, process.env.IP, () => {
   console.log(`Server running http://${process.env.IP}:${process.env.PORT}`);
