@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "production") {
   dotenv.config({ path: "../.env.development" });
 }
 
-const { createUsersTable } = require("../utils/query");
+const { createUsersTable, createFinancesTable } = require("../utils/query");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -61,6 +61,7 @@ processCommands().catch(console.error);
 async function mariaDBV1() {
   try {
     await createUsersTable();
+    await createFinancesTable();
 
     console.log("Initialized mariadb");
   } catch (err) {
