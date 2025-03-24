@@ -73,18 +73,8 @@ Router.get("/", async (req, res) => {
 
 
 Router.get("/chat", async (req, res) => {
-  autoSignin(req, res, async (userId) => {
+  autoSignin(req, res, async () => {
     try {
-      const connection = pool.promise();
-      const [[userInfo]] = await connection.query(
-        `SELECT user_id, name, email, is_admin FROM users WHERE user_id = ?`,
-        [userId]
-      );
-
-      if (!userInfo) {
-        const response = RESPONSE_MESSAGES.noUser();
-        return res.status(response.status).send(response);
-      }
 
       let chatHistory = req.query.chatHistory;
       if (!!chatHistory) {
